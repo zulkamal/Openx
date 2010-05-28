@@ -7,7 +7,8 @@ module OpenX
                      :username      => :username,
                      :password      => :password,
                      :id            => :publisherId,
-                     :agency_id     => :agencyId
+                     :agency_id     => :agencyId,
+                     :website       => :website
 
       has_one :agency
 

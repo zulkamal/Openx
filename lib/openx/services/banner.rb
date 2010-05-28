@@ -61,7 +61,8 @@ module OpenX
                       # 'keyword' only supported by patched server
                       # as per https://developer.openx.org/jira/browse/OX-4779
                       # No averse effect when unsupported by server (returns nil)
-                      :keyword        => :keyword
+                      :keyword        => :keyword,
+                      :comments       => :comments
 
       has_one :campaign
 
