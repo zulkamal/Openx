@@ -81,11 +81,13 @@ module OpenX
       end
 
       def targeting
-        remote.call('ox.getBannerTargeting', self.id)
+        remote.call('ox.getBannerTargeting', self.id) do |line|
+          TargetingRule.instantiate(line)
+        end
       end
 
-      def targeting= targeting
-        remote.call('ox.setBannerTargeting', self.id, targeting)
+      def targeting=(rules)
+        remote.call('ox.setBannerTargeting', self.id, rules)
       end
     end
   end

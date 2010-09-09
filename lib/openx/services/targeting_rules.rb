@@ -1,14 +1,15 @@
 module OpenX
   module Services
+
+    # Create targeting rule sets. Example:
+    #
+    #    rules = OpenX::Services::TargetingRules.new do |t|
+    #      t['Site:Pageurl'].include?('test') &
+    #      t['Client:Ip'].match?(/^127\./) |
+    #      t['Geo:Country'].include?('GB', 'US')
+    #    end
     class TargetingRules < Array
 
-      # Create a new targeting rule set. Example:
-      #
-      #    rules = OpenX::Services::TargetingRules.new do |t|
-      #      t['Site:Pageurl'].include?('test') &
-      #      t['Client:Ip'].match?(/^127\./) |
-      #      t['Geo:Country'].include?('GB', 'US')
-      #    end
       def initialize(&block)
         super([])
         block.call(self)

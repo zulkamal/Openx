@@ -47,7 +47,7 @@ class ChannelTest < OpenX::TestCase
   test "getting/setting targeting" do
     assert_equal [], channel.targeting
     assert_nothing_raised {
-      channel.set_targeting(targeting_rules)
+      channel.targeting = targeting_rules
     }
     assert_equal targeting_rules, channel.targeting
   end
