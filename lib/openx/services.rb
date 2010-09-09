@@ -11,6 +11,7 @@ module OpenX
     autoload :Banner, 'openx/services/banner'
     autoload :Publisher, 'openx/services/publisher'
     autoload :Zone, 'openx/services/zone'
+    autoload :Channel, 'openx/services/channel'
 
     @@connection = nil
 

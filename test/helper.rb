@@ -24,6 +24,7 @@ module OpenX
     Agency      = OpenX::Services::Agency
     Advertiser  = OpenX::Services::Advertiser
     Session     = OpenX::Services::Session
+    Channel     = OpenX::Services::Channel
 
     undef :default_test
 
@@ -84,6 +85,17 @@ module OpenX
       )
     end
 
+    def channel
+      @channel ||= Channel.create!(
+        {
+          :publisher   => publisher,
+          :name        => "Channel - #{Time.now}",
+          :comments    => 'Random Comments',
+          :description => 'Random Description'
+        }
+      )
+    end
+
     def banner
       @banner ||= Banner.create!({
         :name         => "Banner-#{Time.now}",
@@ -102,6 +114,7 @@ module OpenX
       @campaign.destroy if defined? @campaign
       @advertiser.destroy if defined? @advertiser
       @agency.destroy if defined? @agency
+      @channel.destroy if defined? @channel
     end
 
   end

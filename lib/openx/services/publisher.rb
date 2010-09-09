@@ -27,6 +27,10 @@ module OpenX
       def zones
         Zone.find(:all, self.id)
       end
+
+      def channels
+        Channel.find(:all, self.id)
+      end
     end
   end
 end
