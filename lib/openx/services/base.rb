@@ -1,50 +1,37 @@
-require 'yaml'
-
 module OpenX
   module Services
     class Base
+      extend  Persistance::ClassMethods
+      include Persistance::InstanceMethods
       include Comparable
-
-      CONFIGURATION_YAML = File.join(ENV['HOME'], '.openx', 'credentials.yml')
-
-      @@connection    = nil
-      @@configuration = nil
 
       class << self
         attr_accessor :translations
+        attr_writer   :connection
         attr_accessor :create, :update, :delete, :find_one, :find_all
 
-        def configuration
-          @@configuration ||=
-            YAML.load_file(CONFIGURATION_YAML)[ENV['OPENX_ENV'] || 'production']
+        def establish_connection(conn)
+          conn = OpenX::Services.establish_connection(conn) if conn.is_a?(Hash)
+          self.connection = conn
         end
 
-        def configuration=(c); @@configuration = c; end
-
-        def connection= c
-          @@connection = c
+        def with_connection(temporary)
+          current = @connection
+          begin
+            establish_connection(temporary)
+            yield
+          ensure
+            establish_connection(current)
+          end
         end
 
         def connection
-          unless @@connection
-            @@connection = Session.new(configuration['url'])
-            @@connection.create( configuration['username'],
-                                configuration['password']
-                              )
-          end
-          @@connection
+          @connection = nil unless defined?(@connection)
+          @connection || OpenX::Services.default_connection
         end
 
-        def create!(params = {})
-          new(params).save!
-        end
-
-        def openx_accessor(accessor_map)
-          @translations ||= {}
-          @translations = accessor_map.merge(@translations)
-          accessor_map.each do |ruby,openx|
-            attr_accessor :"#{ruby}"
-          end
+        def remote
+          connection.remote
         end
 
         def has_one(*things)
@@ -58,67 +45,38 @@ module OpenX
           end
         end
 
-        def find(id, *args)
-          session   = self.connection
-          server    = XmlrpcClient.new2("#{session.url}")
-          if id == :all
-            responses = server.call(find_all(), session, *args)
-            responses.map { |response|
-              new(translate(response))
-            }
-          else
-            response  = server.call(find_one(), session, id)
-            new(translate(response))
+        def openx_accessor(accessor_map)
+          @translations ||= {}
+          @translations = accessor_map.merge(@translations)
+          accessor_map.each do |ruby,openx|
+            attr_accessor :"#{ruby}"
           end
-        end
-
-        def destroy(id)
-          new(:id => id).destroy
-        end
-
-        private
-        def translate(response)
-          params    = {}
-          self.translations.each { |k,v|
-            params[k] = response[v.to_s] if response[v.to_s]
-          }
-          params
         end
       end
 
       def initialize(params = {})
         @id = nil
         params.each { |k,v| send(:"#{k}=", v) }
-        @server = XmlrpcClient.new2("#{self.class.connection.url}")
       end
 
-      def new_record?; @id.nil?; end
-
-      def save!
-        params = {}
-        session = self.class.connection
-        self.class.translations.keys.each { |k|
-          value = send(:"#{k}")
-          params[self.class.translations[k].to_s] = value if value
-        }
-
-        if new_record?
-          @id = @server.call(self.class.create, session, params)
-        else
-          @server.call(self.class.update, session, params)
-        end
-        self
-      end
-
-      def destroy
-        session = self.class.connection
-        @server.call(self.class.delete, session, id)
-        @id = nil
+      def new_record?
+        @id.nil?
       end
 
       def <=>(other)
         self.id <=> other.id
       end
+
+      protected
+
+        def connection
+          self.class.connection
+        end
+
+        def remote
+          self.class.remote
+        end
+
     end
   end
 end

@@ -1,6 +1,7 @@
-require 'helper'
+require File.dirname(__FILE__) + '/helper'
 
 class ZoneTest < OpenX::TestCase
+
   def test_create
     params = init_params
     zone = Zone.create!(params)

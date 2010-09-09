@@ -1,6 +1,18 @@
 module OpenX
   class Invocation
     class << self
+      DEFAULTS = {
+        :count => 1,
+        :campaignid => 0,
+        :target => '',
+        :source => '',
+        :with_text => false,
+        :exclusions => [],
+        :inclusions => [],
+        :exclude_by_campaignid => false,
+        :exclude_by_bannerid => false
+      }.freeze
+
       #
       # banner = OpenX::Invocation.view("Plumber")
       #
@@ -10,34 +22,21 @@ module OpenX
       # end; nil
       #
       def view(what, params = {})
-        defaults = {
-          :count => 1,
-          :campaignid => 0,
-          :target => '',
-          :source => '',
-          :with_text => false,
-          :exclusions => [],
-          :inclusions => [],
-          :exclude_by_campaignid => false,
-          :exclude_by_bannerid => false
-        }
-        params = defaults.merge(params)
-        
-        url = OpenX::Services::Base.configuration['invocation_url']
-
+        params   = DEFAULTS.merge(params)
+        url      = OpenX::Services.configuration['invocation_url']
         settings = {:cookies => [], :remote_addr => 'localhost'}
-        
+
         context = [] # used by reference after initial use
         params[:exclusions].each { |item| context << convert_to_context(false, item) }
         params[:inclusions].each { |item| context << convert_to_context(true,  item) }
-        count = params[:count].to_i
-        
+        count   = params[:count].to_i
+
         remote_params = [ what, params[:campaignid], params[:target], params[:source], params[:with_text], context]
-        server = XmlrpcClient.new2(url)
-        
+        server  = XmlrpcClient.new(url)
+
         out = []
         if count > 0
-          (0...count).each do 
+          (0...count).each do
             out << banner = server.call('openads.view', settings, *remote_params)
             if count > 1
               if params[:exclude_by_campaignid]
@@ -52,7 +51,7 @@ module OpenX
         end
         count > 1 ? out : out.first
       end
-      
+
       def convert_to_context(is_inclusion, item)
         key = is_inclusion ? '==' : '!='
         { key => item }

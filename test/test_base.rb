@@ -1,37 +1,40 @@
-require 'helper'
+require File.dirname(__FILE__) + '/helper'
 require 'fileutils'
 
 class BaseTest < OpenX::TestCase
-  def test_configuration_reads_from_yaml
-    before_env = ENV['OPENX_ENV']
-    exists = false
-    contents = nil
-    if File.exists?(Base::CONFIGURATION_YAML)
-      exists = true
-      contents = File.read(Base::CONFIGURATION_YAML)
+
+  def teardown
+    Base.connection = nil
+  end
+
+  test "uses (shared) default connection" do
+    assert_equal OpenX::Services.default_connection, Base.connection
+    assert_equal Base.connection, Banner.connection
+  end
+
+  test "can use custom connection" do
+    Base.establish_connection(OpenX.configuration)
+
+    assert_not_equal OpenX::Services.default_connection, Base.connection
+    assert_not_equal Base.connection, Banner.connection
+  end
+
+  test "can temporarily use a custom connection" do
+    assert_equal OpenX::Services.default_connection, Base.connection
+    assert_equal Base.connection, Banner.connection
+
+    Base.with_connection(OpenX.configuration) do
+      assert_not_equal OpenX::Services.default_connection, Base.connection
+      assert_not_equal Base.connection, Banner.connection
     end
 
-    config =  {
-      'awesome' => {
-        'username' => 'aaron',
-        'password' => 'p',
-        'url' => 'http://tenderlovemaking.com/',
-      }
-    }
-    ENV['OPENX_ENV'] = 'awesome'
-
-    Base.configuration = nil
-    FileUtils.mkdir_p(File.dirname(Base::CONFIGURATION_YAML))
-    File.open(Base::CONFIGURATION_YAML, 'wb') { |f|
-      f.write(YAML.dump(config))
-    }
-    assert_equal(config['awesome'], Base.configuration)
-
-    FileUtils.rm(Base::CONFIGURATION_YAML) if !exists
-    File.open(Base::CONFIGURATION_YAML, 'wb') { |f|
-      f.write(contents)
-    } if exists
-    ENV['OPENX_ENV'] = before_env
-    Base.configuration = nil
+    assert_equal OpenX::Services.default_connection, Base.connection
+    assert_equal Base.connection, Banner.connection
   end
+
+  test "has remote client reference" do
+    assert_instance_of OpenX::XmlrpcSessionClient, Base.remote
+    assert_equal Banner.remote, Base.remote
+  end
+
 end

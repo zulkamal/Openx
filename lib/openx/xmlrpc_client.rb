@@ -3,75 +3,70 @@ require 'xmlrpc/client'
 module OpenX
 
   unless defined? HTTPBroken
-    # A module that captures all the possible Net::HTTP exceptions 
+    # A module that captures all the possible Net::HTTP exceptions
     # from http://pastie.org/pastes/145154
     module HTTPBroken; end
-    
-    [Timeout::Error, Errno::EINVAL, Errno::EPIPE, Errno::ECONNRESET, EOFError, Net::HTTPBadResponse, 
-      Net::HTTPHeaderSyntaxError, Net::ProtocolError].each {|m| m.send(:include, HTTPBroken)}
+    [
+      Timeout::Error, Errno::EINVAL, Errno::EPIPE,
+      Errno::ECONNRESET, EOFError, Net::HTTPBadResponse,
+      Net::HTTPHeaderSyntaxError, Net::ProtocolError
+    ].each {|m| m.send(:include, HTTPBroken) }
   end
 
   class XmlrpcClient
-    @uri = nil
-    @server = nil
-    
-    @@retry_on_http_error = true
-    @@timeout = 10 # seconds
-    cattr_accessor :retry_on_http_error, :timeout
-    
-    class << self
-      def init_server(uri)
-        server = XMLRPC::Client.new2(uri)
-        server.timeout = self.timeout
-        #server.instance_variable_get(:@http).set_debug_output($stderr)
-        server
-      end
-      
-      def new2(uri)
-        server = init_server(uri)
-        new(server, uri)
-      end
+    attr_reader :client, :url
+
+    def initialize(url)
+      @url = url
+      init_client!
     end
-    
-    def initialize(server, uri)
-      @server = server
-      @uri = uri
-    end
-    
+
     def call(method, *args)
-      if args.first.is_a?(OpenX::Services::Session)
-        session = args.shift()
-        args.unshift(session.id)
-        begin
-          do_call(method, *args)
-        rescue XMLRPC::FaultException => sess_id_err
-          if sess_id_err.message.strip == 'Session ID is invalid'
-            session.recreate!
-            args.shift()
-            args.unshift(session.id)
-            do_call(method, *args)
-          else
-            raise sess_id_err
-          end
-        end
-      else
-        do_call(method, *args)
-      end
+      @client.call(method, *convert(args))
+    rescue HTTPBroken
+      raise unless OpenX.configuration['retry']
+      init_client!
+      retry
     end
-    
-    def do_call(method, *args)
-      begin
-        @server.call(method, *args)
-      rescue HTTPBroken => httpbe
-        if self.class.retry_on_http_error
-          @server = self.class.init_server(@uri)
-          @server.call(method, *args)
-        else
-          raise httpbe
-        end
+
+    protected
+
+      def convert(args)
+        args
       end
+
+    private
+
+      def init_client!
+        @client = XMLRPC::Client.new2(url)
+        @client.timeout = OpenX.configuration['timeout']
+      end
+
+  end
+
+
+  class XmlrpcSessionClient < XmlrpcClient
+
+    attr_reader :session
+
+    def initialize(session)
+      @session = session
+      super(session.url)
     end
-    private :do_call
-    
+
+    def call(method, *args)
+      super
+    rescue XMLRPC::FaultException => error
+      raise unless error.message =~ /Session ID.*invalid/i
+      session.recreate!
+      retry
+    end
+
+    protected
+
+      def convert(args)
+         [session.id] + args
+      end
+
   end
 end

@@ -1,20 +1,29 @@
-# -*- ruby -*-
+$: << File.join(File.dirname(__FILE__), "lib")
 
 require 'rubygems'
-require 'hoe'
+require 'bundler'
 
-$: << "lib/"
+Bundler.setup
+Bundler.require
+
+require 'rake'
+require 'rake/testtask'
 require 'openx'
 
-HOE = Hoe.new('openx', OpenX::VERSION) do |p|
-  # p.rubyforge_name = 'ruby-openxx' # if different than lowercase project name
-  p.developer('Aaron Patterson', 'aaron.patterson@gmail.com')
+Rake::TestTask.new(:test) do |test|
+  test.test_files = FileList["test/**/test_*.rb"].sort
+  test.libs << "test"
+  test.verbose = false
+  test.warning = true
 end
+
+task :default => :test
 
 namespace :openx do
   task :clean do
-    include OpenX::Services
     ENV['OPENX_ENV'] = 'test'
+    include OpenX::Services
+
     Agency.find(:all) do |agency|
       Advertiser.find(:all, agency.id).each do |advertiser|
         Campaign.find(:all, advertiser.id).each do |campaign|
@@ -26,15 +35,6 @@ namespace :openx do
         advertiser.destroy
       end
     end
+
   end
 end
-
-namespace :gem do
-  task :spec do
-    File.open("#{HOE.name}.gemspec", 'w') do |f|
-      f.write(HOE.spec.to_ruby)
-    end
-  end
-end
-
-# vim: syntax=Ruby

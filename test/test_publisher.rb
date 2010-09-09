@@ -1,4 +1,4 @@
-require 'helper'
+require File.dirname(__FILE__) + '/helper'
 
 class PublisherTest < OpenX::TestCase
   def test_update

@@ -1,34 +1,42 @@
 $LOAD_PATH.unshift(File.expand_path(File.join(File.dirname(__FILE__), '../lib')))
 
+ENV['OPENX_ENV'] = 'test'
+
+require 'rubygems'
+require 'bundler'
+
+Bundler.setup
+Bundler.require
+
 require 'test/unit'
 require 'openx'
 
-ENV['OPENX_ENV'] = 'test'
-
 module OpenX
-  class TestCase < Test::Unit::TestCase
-    TEST_SWF = File.expand_path(File.join(File.dirname(__FILE__), 'assets', 'cat.swf'))
-    TEST_JPG = File.expand_path(File.join(File.dirname(__FILE__), 'assets', '300x250.jpg'))
+  class TestCase < ActiveSupport::TestCase
+    TEST_SWF    = File.expand_path(File.join(File.dirname(__FILE__), 'assets', 'cat.swf'))
+    TEST_JPG    = File.expand_path(File.join(File.dirname(__FILE__), 'assets', '300x250.jpg'))
 
-    include OpenX::Services
+    Base        = OpenX::Services::Base
+    Banner      = OpenX::Services::Banner
+    Zone        = OpenX::Services::Zone
+    Publisher   = OpenX::Services::Publisher
+    Campaign    = OpenX::Services::Campaign
+    Agency      = OpenX::Services::Agency
+    Advertiser  = OpenX::Services::Advertiser
+    Session     = OpenX::Services::Session
 
     undef :default_test
 
     def setup
-      assert(
-             File.exists?(Base::CONFIGURATION_YAML),
-              'Please create the credentials file'
-            )
+      raise 'Please create the credentials file' unless File.exists?(OpenX.config_file)
     end
 
     def agency
-      @agency ||= Agency.create!(
-        {
-          :name         => "Testing! - #{Time.now}",
-          :contact_name => 'Contact Name!',
-          :email        => 'foo@bar.com'
-        }
-      )
+      @agency ||= Agency.create!({
+        :name         => "Testing! - #{Time.now}",
+        :contact_name => 'Contact Name!',
+        :email        => 'foo@bar.com'
+      })
     end
 
     def advertiser
@@ -95,5 +103,6 @@ module OpenX
       @advertiser.destroy if defined? @advertiser
       @agency.destroy if defined? @agency
     end
+
   end
 end

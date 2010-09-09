@@ -1,31 +1,42 @@
 module OpenX
   module Services
     class Session
-      attr_accessor :url, :id
-      attr_accessor :user, :password
+      attr_accessor :id, :uri, :user, :password
 
       def initialize(url)
-        @url    = url
-        @server = XmlrpcClient.new2("#{@url}")
+        @uri    = URI.parse(url)
+        @client = XmlrpcClient.new(self.url)
         @id     = nil
       end
 
+      def url
+        uri.to_s
+      end
+
+      def host
+        url.sub(/#{Regexp.escape(uri.path)}$/, '')
+      end
+
+      def remote
+        @remote ||= XmlrpcSessionClient.new(self)
+      end
+
       def create(user, password)
-        @user = user
-        @password = password
-        @id = @server.call('ox.logon', @user, @password)
+        self.user     = user
+        self.password = password
+        self.id       = @client.call('ox.logon', user, password)
         self
       end
 
       def recreate!
-        raise "Unable to refresh Session" unless @user && @password
-        @id = @server.call('ox.logon', @user, @password)
+        raise "Unable to refresh Session" unless user && password
+        self.id = @client.call('ox.logon', user, password)
         self
       end
 
       def destroy
-        @server.call('ox.logoff', @id)
-        @id = nil
+        @client.call('ox.logoff', id)
+        self.id = nil
         self
       end
     end

@@ -1,4 +1,4 @@
-require 'helper'
+require File.dirname(__FILE__) + '/helper'
 
 class AgencyTest < OpenX::TestCase
   def destroy

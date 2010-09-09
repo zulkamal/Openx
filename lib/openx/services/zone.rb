@@ -29,16 +29,14 @@ module OpenX
       self.find_all = 'ox.getZoneListByPublisherId'
 
       class << self
-        ###
-        # Deliver +zone_id+ to +ip_address+ with +cookies+, 
-        def deliver zone_id, ip_address = '192.168.1.1', cookies = []
-          url = "#{self.configuration['root']}/delivery/axmlrpc.php"
-          server = XmlrpcClient.new2(url)
-          server.call('openads.view', {
-            'cookies'     => cookies,
-            'remote_addr' => ip_address,
-          }, "zone:#{zone_id}", 0, '', '', true, [])
+
+        # Deliver +zone_id+ to +ip_address+ with +cookies+,
+        def deliver(zone_id, options = {})
+          options = { 'ip_address' => '192.168.1.1', 'cookies' => [] }.update(options)
+          server  = XmlrpcClient.new("#{connection.host}/delivery/axmlrpc.php")
+          server.call('openads.view', options, "zone:#{zone_id}", 0, '', '', true, [])
         end
+
       end
 
       def initialize(params = {})
@@ -51,47 +49,33 @@ module OpenX
       def link_campaign(campaign)
         raise "Zone must be saved" if new_record?
         raise ArgumentError.new("Campaign must be saved")if campaign.new_record?
-
-        session   = self.class.connection
-        server    = XmlrpcClient.new2("#{session.url}")
-        server.call("ox.linkCampaign", session, self.id, campaign.id)
+        remote.call("ox.linkCampaign", self.id, campaign.id)
       end
 
       # Unlink this zone from +campaign+
       def unlink_campaign(campaign)
         raise "Zone must be saved" if new_record?
         raise ArgumentError.new("Campaign must be saved")if campaign.new_record?
-
-        session   = self.class.connection
-        server    = XmlrpcClient.new2("#{session.url}")
-        server.call("ox.unlinkCampaign", session, self.id, campaign.id)
+        remote.call("ox.unlinkCampaign", self.id, campaign.id)
       end
 
       # Link this zone to +banner+
       def link_banner(banner)
         raise "Zone must be saved" if new_record?
         raise ArgumentError.new("Banner must be saved")if banner.new_record?
-
-        session   = self.class.connection
-        server    = XmlrpcClient.new2("#{session.url}")
-        server.call("ox.linkBanner", session, self.id, banner.id)
+        remote.call("ox.linkBanner",  self.id, banner.id)
       end
 
       # Unlink this zone from +banner+
       def unlink_banner(banner)
         raise "Zone must be saved" if new_record?
         raise ArgumentError.new("Banner must be saved")if banner.new_record?
-
-        session   = self.class.connection
-        server    = XmlrpcClient.new2("#{session.url}")
-        server.call("ox.unlinkBanner", session, self.id, banner.id)
+        remote.call("ox.unlinkBanner", self.id, banner.id)
       end
 
       # Generate tags for displaying this zone using +tag_type+
       def generate_tags(tag_type = IFRAME)
-        session   = self.class.connection
-        server    = XmlrpcClient.new2("#{session.url}")
-        server.call("ox.generateTags", session, self.id, tag_type, [])
+        remote.call("ox.generateTags", self.id, tag_type, [])
       end
     end
   end

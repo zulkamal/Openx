@@ -14,11 +14,9 @@ module OpenX
 
       class << self
         def find(id, *args)
-          session   = self.connection
-          server    = XmlrpcClient.new2("#{session.url}")
           if id == :all
-            responses = server.call(find_all(), session, *args)
-            response = responses.first
+            responses = remote.call(find_all, *args)
+            response  = responses.first
             return [] unless response
             responses = [response]
 
@@ -30,11 +28,11 @@ module OpenX
               responses << response
             end
 
-            responses.map { |response|
+            responses.map do |response|
               new(translate(response))
-            }
+            end
           else
-            response  = server.call(find_one(), session, id)
+            response  = remote.call(find_one, id)
             new(translate(response))
           end
         end
@@ -79,18 +77,15 @@ module OpenX
       end
 
       def statistics start_on = Date.today, end_on = Date.today
-        session = self.class.connection
-        @server.call('ox.bannerDailyStatistics', session, self.id, start_on, end_on)
+        remote.call('ox.bannerDailyStatistics', self.id, start_on, end_on)
       end
 
       def targeting
-        session = self.class.connection
-        @server.call('ox.getBannerTargeting', session, self.id)
+        remote.call('ox.getBannerTargeting', self.id)
       end
 
       def targeting= targeting
-        session = self.class.connection
-        @server.call('ox.setBannerTargeting', session, self.id, targeting)
+        remote.call('ox.setBannerTargeting', self.id, targeting)
       end
     end
   end
