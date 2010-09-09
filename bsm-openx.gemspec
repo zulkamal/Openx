@@ -32,9 +32,12 @@ Gem::Specification.new do |s|
      "lib/openx/services/banner.rb",
      "lib/openx/services/base.rb",
      "lib/openx/services/campaign.rb",
+     "lib/openx/services/channel.rb",
      "lib/openx/services/persistance.rb",
      "lib/openx/services/publisher.rb",
      "lib/openx/services/session.rb",
+     "lib/openx/services/targeting_rule.rb",
+     "lib/openx/services/targeting_rules.rb",
      "lib/openx/services/zone.rb",
      "lib/openx/xmlrpc_client.rb",
      "test/assets/300x250.jpg",
@@ -45,10 +48,13 @@ Gem::Specification.new do |s|
      "test/test_banner.rb",
      "test/test_base.rb",
      "test/test_campaign.rb",
+     "test/test_channel.rb",
      "test/test_openx.rb",
      "test/test_publisher.rb",
      "test/test_services.rb",
      "test/test_session.rb",
+     "test/test_targeting_rule.rb",
+     "test/test_targeting_rules.rb",
      "test/test_zone.rb"
   ]
   s.homepage = %q{http://github.com/dim/openx}
@@ -58,6 +64,8 @@ Gem::Specification.new do |s|
   s.summary = %q{A Ruby interface to the OpenX XML-RPC API}
   s.test_files = [
     "test/test_openx.rb",
+     "test/test_channel.rb",
+     "test/test_targeting_rule.rb",
      "test/test_zone.rb",
      "test/test_session.rb",
      "test/helper.rb",
@@ -67,6 +75,7 @@ Gem::Specification.new do |s|
      "test/test_advertiser.rb",
      "test/test_services.rb",
      "test/test_banner.rb",
+     "test/test_targeting_rules.rb",
      "test/test_publisher.rb"
   ]
 
