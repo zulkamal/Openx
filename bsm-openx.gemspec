@@ -57,7 +57,7 @@ Gem::Specification.new do |s|
      "test/test_targeting_rules.rb",
      "test/test_zone.rb"
   ]
-  s.homepage = %q{http://github.com/dim/openx}
+  s.homepage = %q{http://github.com/bsm/openx}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}

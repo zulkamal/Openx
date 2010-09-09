@@ -42,7 +42,7 @@ begin
     gemspec.summary = "A Ruby interface to the OpenX XML-RPC API"
     gemspec.description = "A Ruby interface to the OpenX XML-RPC API"
     gemspec.email = "dimitrij@blacksquaremedia.com"
-    gemspec.homepage = "http://github.com/dim/openx"
+    gemspec.homepage = "http://github.com/bsm/openx"
     gemspec.authors = ["Aaron Patterson", "Andy Smith", "TouchLocal P/L", "Dimitrij Denissenko"]
   end
   Jeweler::GemcutterTasks.new
