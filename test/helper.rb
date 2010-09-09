@@ -16,15 +16,17 @@ module OpenX
     TEST_SWF    = File.expand_path(File.join(File.dirname(__FILE__), 'assets', 'cat.swf'))
     TEST_JPG    = File.expand_path(File.join(File.dirname(__FILE__), 'assets', '300x250.jpg'))
 
-    Base        = OpenX::Services::Base
-    Banner      = OpenX::Services::Banner
-    Zone        = OpenX::Services::Zone
-    Publisher   = OpenX::Services::Publisher
-    Campaign    = OpenX::Services::Campaign
-    Agency      = OpenX::Services::Agency
-    Advertiser  = OpenX::Services::Advertiser
-    Session     = OpenX::Services::Session
-    Channel     = OpenX::Services::Channel
+    Base           = OpenX::Services::Base
+    Banner         = OpenX::Services::Banner
+    Zone           = OpenX::Services::Zone
+    Publisher      = OpenX::Services::Publisher
+    Campaign       = OpenX::Services::Campaign
+    Agency         = OpenX::Services::Agency
+    Advertiser     = OpenX::Services::Advertiser
+    Session        = OpenX::Services::Session
+    Channel        = OpenX::Services::Channel
+    TargetingRule  = OpenX::Services::TargetingRule
+    TargetingRules = OpenX::Services::TargetingRules
 
     undef :default_test
 
@@ -105,6 +107,14 @@ module OpenX
         :file_name    => 'oogabooga',
         :image        => OpenX::Image.new(File.open(TEST_SWF, 'rb'))
       })
+    end
+
+    def targeting_rules
+      @targeting_rules ||= OpenX::Services::TargetingRules.new do |t|
+        t['Site:Pageurl'].include?('test') &
+        t['Client:Ip'].match?(/^127\./) |
+        t['Geo:Country'].include?('GB', 'US')
+      end
     end
 
     def destroy

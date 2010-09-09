@@ -44,6 +44,14 @@ class ChannelTest < OpenX::TestCase
     assert_equal('tenderlove', found.name)
   end
 
+  test "getting/setting targeting" do
+    assert_equal [], channel.targeting
+    assert_nothing_raised {
+      channel.set_targeting(targeting_rules)
+    }
+    assert_equal targeting_rules, channel.targeting
+  end
+
   private
 
     def params

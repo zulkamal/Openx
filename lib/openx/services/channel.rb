@@ -23,6 +23,18 @@ module OpenX
         super(params)
       end
 
+      def targeting
+        raise "Channel must be saved" if new_record?
+        remote.call("ox.getChannelTargeting", self.id).map do |line|
+          TargetingRule.instantiate(line)
+        end
+      end
+
+      def set_targeting(rules)
+        raise "Channel must be saved" if new_record?
+        remote.call("ox.setChannelTargeting",  self.id, rules)
+      end
+
     end
   end
 end

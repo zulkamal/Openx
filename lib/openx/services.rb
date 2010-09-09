@@ -12,6 +12,8 @@ module OpenX
     autoload :Publisher, 'openx/services/publisher'
     autoload :Zone, 'openx/services/zone'
     autoload :Channel, 'openx/services/channel'
+    autoload :TargetingRule, 'openx/services/targeting_rule'
+    autoload :TargetingRules, 'openx/services/targeting_rules'
 
     @@connection = nil
 
