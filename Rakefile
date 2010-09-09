@@ -1,11 +1,6 @@
 $: << File.join(File.dirname(__FILE__), "lib")
 
 require 'rubygems'
-require 'bundler'
-
-Bundler.setup
-Bundler.require
-
 require 'rake'
 require 'rake/testtask'
 require 'openx'
@@ -37,4 +32,20 @@ namespace :openx do
     end
 
   end
+end
+
+
+begin
+  require 'jeweler'
+  Jeweler::Tasks.new do |gemspec|
+    gemspec.name = "bsm-openx"
+    gemspec.summary = "A Ruby interface to the OpenX XML-RPC API"
+    gemspec.description = "A Ruby interface to the OpenX XML-RPC API"
+    gemspec.email = "dimitrij@blacksquaremedia.com"
+    gemspec.homepage = "http://github.com/dim/openx"
+    gemspec.authors = ["Aaron Patterson", "Andy Smith", "TouchLocal P/L", "Dimitrij Denissenko"]
+  end
+  Jeweler::GemcutterTasks.new
+rescue LoadError
+  puts "Jeweler not available. Install it with: gem install jeweler"
 end

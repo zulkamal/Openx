@@ -10,11 +10,22 @@ module OpenX
         attr_writer   :connection
         attr_accessor :create, :update, :delete, :find_one, :find_all
 
+        # Establishes a custom connection. Example:
+        #
+        #   class MyBanner < OpenX::Services::Banner
+        #     establish_connection 'url' => 'http://custom.host/openx', 'user' => 'admin', 'password' => 'password'
+        #   end
         def establish_connection(conn)
           conn = OpenX::Services.establish_connection(conn) if conn.is_a?(Hash)
           self.connection = conn
         end
 
+        # Execute a block using a custom connection. Example:
+        #    custom_conn = OpenX::Services.establish_connection({ ... })
+        #
+        #    OpenX::Services::Agency.with_connection(custom_conn) do
+        #      OpenX::Services::Agency.find(:all)
+        #    end
         def with_connection(temporary)
           current = @connection
           begin
@@ -25,11 +36,15 @@ module OpenX
           end
         end
 
+        # Returns the current connection (session)
         def connection
           @connection = nil unless defined?(@connection)
           @connection || OpenX::Services.default_connection
         end
 
+        # Remote API proxy. Example:
+        #
+        #   OpenX::Services::Agency.remote.call 'ox.addAgency', ...
         def remote
           connection.remote
         end

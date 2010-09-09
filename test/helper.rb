@@ -6,7 +6,7 @@ require 'rubygems'
 require 'bundler'
 
 Bundler.setup
-Bundler.require
+Bundler.require :test
 
 require 'test/unit'
 require 'openx'

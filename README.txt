@@ -1,17 +1,15 @@
-= openx
-
-* http://openx.rubyforge.org
-
-== DESCRIPTION:
+= OpenX
 
 A Ruby interface to the OpenX XML-RPC API.
 
 == SYNOPSIS:
 
-  OpenX::Services::Base.configuration = {
+  OpenX.configuration = {
     'username'  => 'admin',
     'password'  => 'password',
     'url'       => 'http://localhost/www/api/v2/xmlrpc/',
+    'timeout'   => 10,   # Optional
+    'reconnect' => true  # Optional
   }
 
   OpenX::Services::Agency.find(:all).each do |agency|
@@ -23,7 +21,7 @@ A Ruby interface to the OpenX XML-RPC API.
     end
 
     # Create a publisher
-    Publisher.create!(
+    OpenX::Services::Publisher.create!(
       :agency       => agency,
       :name         => 'My Test Publisher',
       :contact_name => 'Aaron Patterson',
@@ -39,8 +37,10 @@ A Ruby interface to the OpenX XML-RPC API.
 
 == INSTALL:
 
-* sudo gem install openx
-* Update your $HOME/.openx/credentials.yml file.  Here is a sample:
+* sudo gem install bsm-openx
+* Update your $HOME/.openx/credentials.yml file.
+  You can set your own path via OpenX.config_file = '/path/pto/file.yml'.
+  Here is a sample:
 
   ---
   production:
@@ -51,18 +51,19 @@ A Ruby interface to the OpenX XML-RPC API.
 
 The YAML file lists configuration for each environment.  The gem uses the
 'production' environment by default. Trailing slash is required on the 'url'.
-'invocation_url' is only used by the OpenX::Invocation methods to serve 
+'invocation_url' is only used by the OpenX::Invocation methods to serve
 advertisements over XML-RPC
 
 == LICENSE:
 
 (The MIT License)
 
-Copyright (c) 2008:
+Copyright (c) 2010:
 
 * {Aaron Patterson}[http://tenderlovemaking.com]
 * Andy Smith
 * {TouchLocal P/L}[http://www.touchlocal.com]
+* Dimitrij Denissenko
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
