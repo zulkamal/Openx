@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{bsm-openx}
-  s.version = "1.9.2"
+  s.version = "1.9.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Aaron Patterson", "Andy Smith", "TouchLocal P/L", "Dimitrij Denissenko"]
-  s.date = %q{2010-09-09}
+  s.date = %q{2010-09-13}
   s.description = %q{A Ruby interface to the OpenX XML-RPC API}
   s.email = %q{dimitrij@blacksquaremedia.com}
   s.extra_rdoc_files = [
@@ -55,6 +55,8 @@ Gem::Specification.new do |s|
      "test/test_session.rb",
      "test/test_targeting_rule.rb",
      "test/test_targeting_rules.rb",
+     "test/test_xmlrpc_client.rb",
+     "test/test_xmlrpc_session_client.rb",
      "test/test_zone.rb"
   ]
   s.homepage = %q{http://github.com/bsm/openx}
@@ -63,7 +65,8 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{A Ruby interface to the OpenX XML-RPC API}
   s.test_files = [
-    "test/test_openx.rb",
+    "test/test_xmlrpc_session_client.rb",
+     "test/test_openx.rb",
      "test/test_channel.rb",
      "test/test_targeting_rule.rb",
      "test/test_zone.rb",
@@ -76,6 +79,7 @@ Gem::Specification.new do |s|
      "test/test_services.rb",
      "test/test_banner.rb",
      "test/test_targeting_rules.rb",
+     "test/test_xmlrpc_client.rb",
      "test/test_publisher.rb"
   ]
 
