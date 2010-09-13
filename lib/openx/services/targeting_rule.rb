@@ -74,13 +74,13 @@ module OpenX
         update 'comparison' => '!x', 'data' => convert(value)
       end
 
-      def include?(*value)
-        update 'comparison' => '=~', 'data' => convert(value)
+      def include?(*values)
+        update 'comparison' => '=~', 'data' => convert(values)
       end
       alias_method :contains?, :include?
 
-      def exclude?(*value)
-        update 'comparison' => '!~', 'data' => convert(value)
+      def exclude?(*values)
+        update 'comparison' => '!~', 'data' => convert(values)
       end
       alias_method :does_not_contain?, :exclude?
 

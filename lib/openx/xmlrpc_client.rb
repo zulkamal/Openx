@@ -2,29 +2,31 @@ require 'xmlrpc/client'
 
 module OpenX
 
-  unless defined? HTTPBroken
-    # A module that captures all the possible Net::HTTP exceptions
-    # from http://pastie.org/pastes/145154
-    module HTTPBroken; end
-    [
-      Timeout::Error, Errno::EINVAL, Errno::EPIPE,
-      Errno::ECONNRESET, EOFError, Net::HTTPBadResponse,
-      Net::HTTPHeaderSyntaxError, Net::ProtocolError
-    ].each {|m| m.send(:include, HTTPBroken) }
-  end
-
   class XmlrpcClient
+    EXCEPTION_CLASSES = [
+      ::Timeout::Error,
+      ::Errno::EINVAL,
+      ::Errno::EPIPE,
+      ::Errno::ECONNRESET,
+      ::EOFError,
+      ::Net::HTTPBadResponse,
+      ::Net::HTTPHeaderSyntaxError,
+      ::Net::ProtocolError
+    ].freeze
+
     attr_reader :client, :url
 
     def initialize(url)
-      @url = url
+      @url     = url
+      @retries = 0
       init_client!
     end
 
     def call(method, *args)
-      @client.call(method, *convert(args))
-    rescue HTTPBroken
-      raise unless OpenX.configuration['retry']
+      @client.call(method, *(convert(args)))
+    rescue *EXCEPTION_CLASSES => e
+      cycle = (cycle || 0) + 1
+      raise(e) if cycle > 10 || OpenX.configuration['retry'] == false
       init_client!
       retry
     end
@@ -56,8 +58,9 @@ module OpenX
 
     def call(method, *args)
       super
-    rescue XMLRPC::FaultException => error
-      raise unless error.message =~ /Session ID.*invalid/i
+    rescue XMLRPC::FaultException => e
+      cycle = (cycle || 0) + 1
+      raise(e) if cycle > 10 || e.message !~ /Session ID.*invalid/i
       session.recreate!
       retry
     end

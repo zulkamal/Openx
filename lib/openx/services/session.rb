@@ -24,8 +24,7 @@ module OpenX
       def create(user, password)
         self.user     = user
         self.password = password
-        self.id       = @client.call('ox.logon', user, password)
-        self
+        recreate!
       end
 
       def recreate!
@@ -39,6 +38,7 @@ module OpenX
         self.id = nil
         self
       end
+
     end
   end
 end
