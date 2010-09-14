@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{bsm-openx}
-  s.version = "1.9.3"
+  s.version = "1.9.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Aaron Patterson", "Andy Smith", "TouchLocal P/L", "Dimitrij Denissenko"]
-  s.date = %q{2010-09-13}
+  s.date = %q{2010-09-14}
   s.description = %q{A Ruby interface to the OpenX XML-RPC API}
   s.email = %q{dimitrij@blacksquaremedia.com}
   s.extra_rdoc_files = [
@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
      "lib/openx.rb",
      "lib/openx/image.rb",
      "lib/openx/invocation.rb",
+     "lib/openx/persistance.rb",
      "lib/openx/services.rb",
      "lib/openx/services/advertiser.rb",
      "lib/openx/services/agency.rb",
@@ -33,12 +34,11 @@ Gem::Specification.new do |s|
      "lib/openx/services/base.rb",
      "lib/openx/services/campaign.rb",
      "lib/openx/services/channel.rb",
-     "lib/openx/services/persistance.rb",
      "lib/openx/services/publisher.rb",
      "lib/openx/services/session.rb",
-     "lib/openx/services/targeting_rule.rb",
-     "lib/openx/services/targeting_rules.rb",
      "lib/openx/services/zone.rb",
+     "lib/openx/targeting_rule.rb",
+     "lib/openx/targeting_rules.rb",
      "lib/openx/xmlrpc_client.rb",
      "test/assets/300x250.jpg",
      "test/assets/cat.swf",
