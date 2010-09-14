@@ -41,7 +41,6 @@ class TargetingRuleTest < OpenX::TestCase
   end
 
   test "comparisons" do
-    assert_equal({"logical"=>"and", "type"=>"Geo:Region", "comparison"=>"==", "data" => "GB|H9"}, new_rule == 'GB|H9')
     assert_equal({"logical"=>"and", "type"=>"Geo:Region", "comparison"=>"==", "data" => "GB|H9"}, new_rule.eq?('GB|H9'))
     assert_equal({"logical"=>"and", "type"=>"Geo:Region", "comparison"=>"==", "data" => "GB|H9"}, new_rule.equal?('GB|H9'))
     assert_equal({"logical"=>"and", "type"=>"Geo:Region", "comparison"=>"==", "data" => "GB|H9"}, new_rule.is?('GB|H9'))

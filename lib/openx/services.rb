@@ -2,7 +2,6 @@ require 'yaml'
 
 module OpenX
   module Services
-    autoload :Persistance, 'openx/services/persistance'
     autoload :Base, 'openx/services/base'
     autoload :Session, 'openx/services/session'
     autoload :Advertiser, 'openx/services/advertiser'
@@ -12,8 +11,6 @@ module OpenX
     autoload :Publisher, 'openx/services/publisher'
     autoload :Zone, 'openx/services/zone'
     autoload :Channel, 'openx/services/channel'
-    autoload :TargetingRule, 'openx/services/targeting_rule'
-    autoload :TargetingRules, 'openx/services/targeting_rules'
 
     @@connection = nil
 

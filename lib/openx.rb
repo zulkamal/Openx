@@ -1,6 +1,9 @@
 module OpenX
+  autoload :Persistance, 'openx/persistance'
   autoload :Image, 'openx/image'
   autoload :Invocation, 'openx/invocation'
+  autoload :TargetingRule, 'openx/targeting_rule'
+  autoload :TargetingRules, 'openx/targeting_rules'
   autoload :Services, 'openx/services'
   autoload :XmlrpcClient, 'openx/xmlrpc_client'
   autoload :XmlrpcSessionClient, 'openx/xmlrpc_client'

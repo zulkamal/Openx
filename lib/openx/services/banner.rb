@@ -81,12 +81,14 @@ module OpenX
       end
 
       def targeting
-        remote.call('ox.getBannerTargeting', self.id) do |line|
+        raise "Banner must be saved" if new_record?
+        remote.call('ox.getBannerTargeting', self.id).map do |line|
           TargetingRule.instantiate(line)
         end
       end
 
       def targeting=(rules)
+        raise "Banner must be saved" if new_record?
         remote.call('ox.setBannerTargeting', self.id, rules)
       end
     end

@@ -25,8 +25,8 @@ module OpenX
     Advertiser     = OpenX::Services::Advertiser
     Session        = OpenX::Services::Session
     Channel        = OpenX::Services::Channel
-    TargetingRule  = OpenX::Services::TargetingRule
-    TargetingRules = OpenX::Services::TargetingRules
+    TargetingRule  = OpenX::TargetingRule
+    TargetingRules = OpenX::TargetingRules
 
     undef :default_test
 
@@ -110,7 +110,7 @@ module OpenX
     end
 
     def targeting_rules
-      @targeting_rules ||= OpenX::Services::TargetingRules.new do |t|
+      @targeting_rules ||= OpenX::TargetingRules.new do |t|
         t['Site:Pageurl'].include?('test') &
         t['Client:Ip'].match?(/^127\./) |
         t['Geo:Country'].include?('GB', 'US')
