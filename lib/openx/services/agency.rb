@@ -29,6 +29,10 @@ module OpenX
       def publishers
         Publisher.find(:all, self.id)
       end
+
+      def statistics(start_on = Date.today, end_on = Date.today)
+        remote.call('ox.agencyBannerStatistics', self.id)
+      end
     end
   end
 end

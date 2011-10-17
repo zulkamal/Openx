@@ -44,6 +44,10 @@ module OpenX
         super(params)
       end
 
+      def statistics(start_on = Date.today, end_on = Date.today)
+        remote.call('ox.campaignBannerStatistics', self.id, start_on, end_on)
+      end
+
       def banners
         Banner.find(:all, self.id)
       end
