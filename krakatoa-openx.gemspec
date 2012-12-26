@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "krakatoa-openx"
-  s.version = "1.9.4"
+  s.version = "1.9.4.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Aaron Patterson", "Andy Smith", "TouchLocal P/L", "Dimitrij Denissenko"]
-  s.date = "2011-10-17"
+  s.date = "2012-12-26"
   s.description = "A Ruby interface to the OpenX XML-RPC API"
   s.email = "krakatoa1987@gmail.com"
   s.extra_rdoc_files = [
