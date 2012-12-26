@@ -12,11 +12,9 @@ module OpenX
     autoload :Zone, 'openx/services/zone'
     autoload :Channel, 'openx/services/channel'
 
-    @@connection = nil
-
     # Default connection
     def self.default_connection
-      @@connection ||= establish_connection(OpenX.configuration)
+      Thread.current["OpenX::connection"] ||= establish_connection(OpenX.configuration)
     end
 
     def self.establish_connection(config)

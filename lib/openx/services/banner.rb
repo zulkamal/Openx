@@ -60,7 +60,9 @@ module OpenX
                       # as per https://developer.openx.org/jira/browse/OX-4779
                       # No averse effect when unsupported by server (returns nil)
                       :keyword        => :keyword,
-                      :comments       => :comments
+                      :comments       => :comments,
+                      :capping        => :capping,
+                      :session_capping=> :sessionCapping
 
       has_one :campaign
 

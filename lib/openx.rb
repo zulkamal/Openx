@@ -9,7 +9,7 @@ module OpenX
   autoload :XmlrpcSessionClient, 'openx/xmlrpc_client'
 
   @@env           = ENV['OPENX_ENV'] || 'production'
-  @@config_file   = File.join(ENV['HOME'], '.openx', 'credentials.yml')
+  @@config_file   = File.join(ENV['HOME'], '.openx', 'credentials.yml') if ENV['HOME']
   @@configuration = nil
 
   DEFAULT_OPTIONS = { 'retry' => true, 'timeout' => 10 }
