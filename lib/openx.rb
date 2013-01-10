@@ -25,7 +25,7 @@ module OpenX
     end
 
     def configuration
-      @@configuration ||= DEFAULT_OPTIONS.merge(YAML.load_file(config_file)[env])
+      @@configuration ||= DEFAULT_OPTIONS.merge(YAML.load(ERB.new(IO.read(config_file)).result)[env])
     end
 
     def configuration=(value)
